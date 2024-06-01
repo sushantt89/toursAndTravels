@@ -3,7 +3,7 @@ import "../../styles/home.css";
 import { Container, Row, Col } from "reactstrap";
 import heroImg from "../../assets/images/hero-img01.jpg";
 import heroImg02 from "../../assets/images/hero-img02.jpg";
-import heroVideo from "../../assets/images/hero-video.mp4";
+import heroImg03 from "../../assets/images/gallery-06.jpg";
 import worldImg from "../../assets/images/world.png";
 import experienceImg from "../../assets/images/experience.png";
 import Subtitle from "../../shared/Subtitle";
@@ -48,7 +48,7 @@ const Home = () => {
             </Col>
             <Col lg="2">
               <div className="hero_img-box mt-4">
-                <video src={heroVideo} alt="heroVideo" autoPlay muted loop />
+              <img src={heroImg03} alt="heroImg03" />
               </div>
             </Col>
             <Col lg="2">
