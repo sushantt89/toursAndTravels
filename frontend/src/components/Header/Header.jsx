@@ -46,7 +46,7 @@ const Header = () => {
               <img src={logo} alt="logo" />
             </div>
             {/* ============== logo end ============= */}
-            {/* ============== menu start ============= */}``
+            {/* ============== menu start ============= */}
             <div className="navigation">
               <ul className="menu d-flex align-items-center gap-5">
                 {nav_links.map((item, index) => (
