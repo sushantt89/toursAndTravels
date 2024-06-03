@@ -3,6 +3,7 @@ import TourCard from "../../shared/TourCard";
 import { Col } from "reactstrap";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URL } from "../../utils/config";
+import Loader from "../../shared/Loader";
 
 const FeaturedTourList = () => {
   const {
@@ -13,15 +14,7 @@ const FeaturedTourList = () => {
 
   return (
     <>
-      {loading && (
-        <section className="dots-container">
-          <div className="dot"></div>
-          <div className="dot"></div>
-          <div className="dot"></div>
-          <div className="dot"></div>
-          <div className="dot"></div>
-        </section>
-      )}
+      {loading && <Loader />}
       {error && <h1>{error}</h1>}
       {!loading &&
         !error &&

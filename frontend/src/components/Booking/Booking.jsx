@@ -5,8 +5,8 @@ import { Form, FormGroup, ListGroup, ListGroupItem, Button } from "reactstrap";
 
 import { useNavigate } from "react-router-dom";
 
-const Booking = ({ tour, avgRating }) => {
-  const { price, reviews } = tour;
+const Booking = ({ tourDetails, avgRating }) => {
+  const { price, reviews } = tourDetails;
   const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState({

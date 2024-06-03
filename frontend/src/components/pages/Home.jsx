@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../../styles/home.css";
 import { Container, Row, Col } from "reactstrap";
 import heroImg from "../../assets/images/hero-img01.jpg";
@@ -15,6 +15,9 @@ import Testimonial from "../Testimonial/Testimonial";
 import Newsletter from "../../shared/Newsletter";
 
 const Home = () => {
+  useEffect(()=>{
+    window.scrollTo({top:0,behavior:"smooth"})
+  },[])
   
   return (
     <>

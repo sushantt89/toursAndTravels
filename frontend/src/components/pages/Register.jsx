@@ -1,22 +1,48 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Container, Row, Col, Form, FormGroup, Button } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import "../../styles/login.css";
 
 import registerImg from "../../assets/images/register.png";
 import userIcon from "../../assets/images/user.png";
+import { BASE_URL } from "../../utils/config";
+import { AuthContext } from "../../context/AuthContext";
 const Register = () => {
   const [credentials, setCredentials] = useState({
-    username:undefined,
+    username: undefined,
     email: undefined,
     password: undefined,
   });
-  const handleChange = (e) => {
+  const {dispatch}=useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleChange = async (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
+    try {
+      const res = await fetch(`${BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+  
+      const result = await res.json();
+  
+      if (!res.ok) {
+        alert(result.message);
+      } else {
+        dispatch({ type: "REGISTER_FULFILLED" });
+        navigate("/login");
+      }
+    } catch (error) {
+      alert(error.message);
+    }
   };
+  
   return (
     <section>
       <Container>
@@ -48,6 +74,7 @@ const Register = () => {
                       required
                       id="email"
                       onChange={handleChange}
+                      autoComplete="email"
                     />
                   </FormGroup>
                   <FormGroup>
@@ -64,7 +91,7 @@ const Register = () => {
                   </Button>
                 </Form>
                 <p>
-               Already have an account? <Link to="/login">Login</Link>
+                  Already have an account? <Link to="/login">Login</Link>
                 </p>
               </div>
             </div>

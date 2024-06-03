@@ -1,26 +1,55 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Container, Row, Col, Form, FormGroup, Button } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/login.css";
 import TopLoadingBar from "../../shared/TopLoadingBar";
 
 import loginImg from "../../assets/images/login.png";
 import userIcon from "../../assets/images/user.png";
+
+import { BASE_URL } from "../../utils/config";
+import { AuthContext } from "../../context/AuthContext";
 const Login = () => {
   const [credentials, setCredentials] = useState({
     email: undefined,
     password: undefined,
   });
+
+  const { dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
+
+    dispatch({ type: "LOGIN_PENDING" });
+    try {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(credentials),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        alert(result.message);
+      }
+      console.log(result.data);
+      if (res.ok) {
+        dispatch({ type: "LOGIN_FULFILLED", payload: result.data });
+        navigate("/");
+      }
+    } catch (error) {
+      dispatch({ type: "LOGIN_FAILED", payload: error.message });
+    }
   };
   return (
-
     <section>
-      <TopLoadingBar/>
+      <TopLoadingBar />
       <Container>
         <Row>
           <Col lg="8" className="m-auto">
@@ -50,8 +79,10 @@ const Login = () => {
                       required
                       id="password"
                       onChange={handleChange}
+                      autoComplete="current-password"
                     />
                   </FormGroup>
+
                   <Button className="btn secondary_btn auth_btn" type="submit">
                     Login
                   </Button>
