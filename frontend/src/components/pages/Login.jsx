@@ -38,7 +38,6 @@ const Login = () => {
       if (!res.ok) {
         alert(result.message);
       }
-      console.log(result.data);
       if (res.ok) {
         dispatch({ type: "LOGIN_FULFILLED", payload: result.data });
         navigate("/");

@@ -21,7 +21,6 @@ export const createReview = async (req, res) => {
       message: "Successfully created a Review!",
       data: savedReview,
     });
-    console.log(savedReview);
   } catch (error) {
     res.status(500).json({
       success: false,

@@ -10,7 +10,6 @@ import NotFound from "../../shared/NotFound";
 const SearchResultList = () => {
   const location=useLocation();
   const [data]=useState(location.state);
-  console.log(data)
   return (
     <>
       <CommonSection title={"Tour Search Result"} />

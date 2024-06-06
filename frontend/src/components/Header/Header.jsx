@@ -81,6 +81,7 @@ const Header = () => {
             {/* ============== menu end ============= */}
             <div className="nav_right d-flex align-items-center gap-4">
               <div className="nav_btns d-flex align-items-center gap-4">
+                {console.log("user",user)}
                 {user ? (
                   <>
                     <h6 className="mb-0">{user.username}</h6>

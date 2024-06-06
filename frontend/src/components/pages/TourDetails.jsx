@@ -24,10 +24,8 @@ const TourDetails = () => {
     loading,
     error,
   } = useFetch(`${BASE_URL}/tours/${id}`);
-  // console.log(tourDetails);
 
   const reviewObj = tourDetails.reviews;
-  console.log(reviewObj);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -171,7 +169,7 @@ const TourDetails = () => {
                               <div>
                                 <h5>{review.username}</h5>
                                 <p>
-                                  {new Date("01-18-2023").toLocaleDateString(
+                                  {new Date(review.createdAt).toLocaleDateString(
                                     "en-US",
                                     options
                                   )}

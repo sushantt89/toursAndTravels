@@ -13,7 +13,6 @@ import FeaturedTourList from "../Featured-tours/FeaturedTourList";
 import MasonryImagesGallery from "../Image-gallery/MasonryImagesGallery";
 import Testimonial from "../Testimonial/Testimonial";
 import Newsletter from "../../shared/Newsletter";
-
 const Home = () => {
   useEffect(()=>{
     window.scrollTo({top:0,behavior:"smooth"})

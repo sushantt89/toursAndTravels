@@ -1,38 +1,62 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./booking.css";
 import TopLoadingBar from "../../shared/TopLoadingBar";
 import { Form, FormGroup, ListGroup, ListGroupItem, Button } from "reactstrap";
 
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { BASE_URL } from "../../utils/config";
 
 const Booking = ({ tourDetails, avgRating }) => {
+  const { user } = useContext(AuthContext);
   const { price, reviews } = tourDetails;
   const navigate = useNavigate();
 
-  const [credentials, setCredentials] = useState({
-    userId: "01", //later it will be dynamic
-    userEmail: "example@gmail.com",
+  const [booking, setBooking] = useState({
+    userId: user && user._id, //later it will be dynamic
+    userEmail: user && user.email,
     fullName: "",
     phone: "",
-    guestSize: "1",
+    guestSize: "",
     bookAt: "",
   });
 
   const handleChange = (e) => {
-    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
+
   const serviceFee = 2500;
   const totalAmount =
-    Number(price) * Number(credentials.guestSize) + Number(serviceFee);
+    Number(price) * Number(booking.guestSize) + Number(serviceFee);
 
   //send data to the server
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
-    navigate("/thank-you")
+    try {
+      if (!user || user === null || user === undefined) {
+        return alert("please log in");
+      }
+      const res = await fetch(`${BASE_URL}/booking`, {
+        method: "post",
+        headers: {
+          "content-type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(booking),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        return alert(result.message);
+      }
+      navigate("/thank-you");
+    } catch (error) {
+      alert(error.message);
+    }
   };
+
   return (
     <div className="booking">
-      <TopLoadingBar/>
+      <TopLoadingBar />
       <div className="booking_top d-flex align-items-center justify-content-between">
         <h3>
           Rs. {price} <span>/ person</span>
@@ -80,8 +104,8 @@ const Booking = ({ tourDetails, avgRating }) => {
               onChange={handleChange}
             />
           </FormGroup>
-        </Form>
-      </div>
+       
+      
       {/*============== booking form end ================*/}
       {/*============== booking bottom  ================*/}
       <div className="booking_bottom">
@@ -102,9 +126,11 @@ const Booking = ({ tourDetails, avgRating }) => {
             <span>Rs. {totalAmount} </span>
           </ListGroupItem>
         </ListGroup>
-        <Button className="btn primary_btn w-100 mt-4" onClick={handleClick}>
-          Book Now
-        </Button>
+      </div>
+      <Button className="btn primary_btn w-100 mt-4" type="submit">
+            Book Now
+          </Button>
+      </Form>
       </div>
     </div>
   );
