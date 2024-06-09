@@ -8,6 +8,7 @@ import Register from '../components/pages/Register';
 import SearchResultList from '../components/pages/SearchResultList';
 import ThankYou from "../components/pages/ThankYou";
 import Inquiry from "../components/pages/Inquiry"
+import AdminDashboard from "../components/Admin/AdminDashboard";
 const Routers = () => {
   return (
     <Routes>
@@ -20,6 +21,7 @@ const Routers = () => {
       <Route exact path="/thank-you" element={<ThankYou/>} />
       <Route exact path="/inquiry" element={<Inquiry/>} />
       <Route exact path="/tours/search" element={<SearchResultList/>} />
+      <Route exact path="/admin/dashboard" element={<AdminDashboard/>} />
     </Routes>
   );
 };

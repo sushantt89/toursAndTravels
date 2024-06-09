@@ -7,7 +7,6 @@ const bookingSchema = new mongoose.Schema({
   userEmail: {
     type: String,
     required: true,
-    unique: true,
   },
   fullName: {
     type: String,
