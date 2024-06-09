@@ -14,6 +14,7 @@ export const register = async (req, res) => {
       email: req.body.email,
       password: hash,
       photo: req.body.photo,
+      role:req.body.role,
     });
 
     const saveduser = await newUser.save();

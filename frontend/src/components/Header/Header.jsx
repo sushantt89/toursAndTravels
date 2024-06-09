@@ -1,12 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import { Container, Row, Button } from "reactstrap";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import "./header.css";
-
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import useFetch from "../../hooks/useFetch";
+import { BASE_URL } from "../../utils/config";
 
 const nav_links = [
   {
@@ -27,6 +26,18 @@ const Header = () => {
   const navigate = useNavigate();
   const { dispatch, user } = useContext(AuthContext);
 
+  // Pull id from localStorage
+  const accessStorage = user ? localStorage.getItem("user") : null;
+  const storageObject = accessStorage ? JSON.parse(accessStorage) : null;
+  const id = storageObject ? storageObject._id : null;
+
+  // Fetch user data
+  const { data: singleUser } = useFetch(id ? `${BASE_URL}/users/${id}` : null);
+  console.log(singleUser);
+
+  const role = singleUser?.role;
+  console.log("role:", role);
+
   const logout = () => {
     dispatch({ type: "LOGOUT" });
     navigate("/");
@@ -34,26 +45,28 @@ const Header = () => {
 
   const headerRef = useRef(null);
   const stickyHeaderFunc = () => {
-    window.addEventListener("scroll", () => {
-      if (
-        document.body.scrollTop > 80 ||
-        document.documentElement.scrollTop > 80
-      ) {
-        headerRef.current.classList.add("sticky_header");
-      } else {
-        headerRef.current.classList.remove("sticky_header");
-      }
-    });
+    if (
+      document.body.scrollTop > 80 ||
+      document.documentElement.scrollTop > 80
+    ) {
+      headerRef.current.classList.add("sticky_header");
+    } else {
+      headerRef.current.classList.remove("sticky_header");
+    }
   };
+
   useEffect(() => {
-    stickyHeaderFunc();
-    return window.removeEventListener("scroll", stickyHeaderFunc);
-  });
+    window.addEventListener("scroll", stickyHeaderFunc);
+    return () => {
+      window.removeEventListener("scroll", stickyHeaderFunc);
+    };
+  }, []);
+
   return (
     <header className="header" ref={headerRef}>
       <Container>
         <Row>
-          <div className="nav_wrapper d-flex aligh-items-center justify-content-between">
+          <div className="nav_wrapper d-flex align-items-center justify-content-between">
             {/* ============== logo start ============= */}
             <div className="logo">
               <Link to={"/"}>
@@ -76,15 +89,28 @@ const Header = () => {
                     </NavLink>
                   </li>
                 ))}
+                {singleUser?.role === "admin" && (
+                  <li className="nav_item">
+                    <NavLink
+                      to="/admin/Dashboard"
+                      className={(navClass) =>
+                        navClass.isActive ? "active_link" : ""
+                      }
+                    >
+                      Admin
+                    </NavLink>
+                  </li>
+                )}
               </ul>
             </div>
             {/* ============== menu end ============= */}
             <div className="nav_right d-flex align-items-center gap-4">
               <div className="nav_btns d-flex align-items-center gap-4">
-                {console.log("user",user)}
                 {user ? (
                   <>
-                    <h6 className="mb-0">{user.username}</h6>
+                    <h6 className="mb-0">
+                      Welcome {user.username} {role === "user" ? "(User)" : "(Admin)"}
+                    </h6>
                     <Button className="btn primary_btn mb-0" onClick={logout}>
                       Logout
                     </Button>
