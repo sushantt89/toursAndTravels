@@ -32,11 +32,33 @@ const AllUsers = () => {
   };
 
   const handleMenuItemClick = async (option) => {
-    if (option === "Update") {
-      setModalOpen(true); 
     setOpen(false);
-
-
+    if (option === "Update") {
+      setModalOpen(true);
+      setOpen(false);
+    }
+    if (option === "Delete") {
+      const id = selectedUser.id;
+      try {
+        const bodyObject = {
+          id: selectedUser.id,
+        };
+        const res = await fetch(`${BASE_URL}/users/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(bodyObject),
+        });
+        const result = await res.json();
+        if (!res.ok) {
+         return alert(result.message);
+        }
+        alert(`successfully deleted ${selectedUser.name}`)
+      } catch (error) {
+        alert(error.message)
+      }
     }
   };
 
@@ -66,9 +88,21 @@ const AllUsers = () => {
             <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
           <div></div>
-          <Menu open={open} anchorEl={anchorEl} onClose={handleClose} style={{ width: "1000px" }}>
+          <Menu
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            style={{ width: "1000px" }}
+          >
             {options.map((option) => (
-              <MenuItem key={option} onClick={(e) => { handleMenuItemClick(option) }}>{option}</MenuItem>
+              <MenuItem
+                key={option}
+                onClick={(e) => {
+                  handleMenuItemClick(option);
+                }}
+              >
+                {option}
+              </MenuItem>
             ))}
           </Menu>
         </div>
@@ -110,8 +144,11 @@ const AllUsers = () => {
         </div>
       )}
 
-     
-      <FormModal user={selectedUser} open={modalOpen} handleClose={handleModalClose} />
+      <FormModal
+        user={selectedUser}
+        open={modalOpen}
+        handleClose={handleModalClose}
+      />
     </>
   );
 };
