@@ -9,7 +9,7 @@ import { verifyAdmin, verifyUser } from "../utils/verifyToken.js";
 const router = express.Router();
 
 //update user
-router.put("/:id", verifyUser, updateUser);
+router.put("/:id", verifyAdmin, updateUser);
 //Delete user
 router.delete("/:id", verifyUser, deleteUser);
 //getSingle user

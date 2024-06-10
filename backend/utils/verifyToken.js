@@ -20,13 +20,15 @@ const verifyToken = (req, res, next) => {
     }
 
     req.user = user;
+    // console.log(user);
     next();
   });
 };
 
 export const verifyUser = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.id === req.params.id || req.user.role === "admin") {
+    if (req.user.role === "user" || req.user.role === "admin") {
+
       next();
     } else {
       return res.status(401).json({
@@ -39,6 +41,7 @@ export const verifyUser = (req, res, next) => {
 
 export const verifyAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
+    // console.log(req)
     if (req.user.role === "admin") {
       next();
     } else {

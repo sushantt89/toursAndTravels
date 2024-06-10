@@ -1,28 +1,118 @@
 import { DataGrid } from "@mui/x-data-grid";
-import React from "react";
+import React, { useContext, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URL } from "../../utils/config";
+import { AuthContext } from "../../context/AuthContext";
+import Loader from "../../shared/Loader";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { IconButton, Menu, MenuItem } from "@mui/material";
+import FormModal from "./FormModal";
 
 const AllUsers = () => {
-  //get all users
-  const allUsers = useFetch(`${BASE_URL}`);
+  const { user } = useContext(AuthContext);
+  // get all users
+  const { data: allUsers, loading, error } = useFetch(`${BASE_URL}/users/`);
+  console.log("allUsers:", allUsers);
+  const options = ["Update", "Delete"];
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false); // State to manage modal visibility
 
-  const rows = [
-    { id: 1, col1: "Hello", col2: "World" },
-    { id: 2, col1: "DataGridPro", col2: "is Awesome" },
-    { id: 3, col1: "MUI", col2: "is Amazing" },
-  ];
+  const handleEdit = (event, user) => {
+    setSelectedUser(user);
+    setAnchorEl(event.currentTarget);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = async (option) => {
+    if (option === "Update") {
+      setModalOpen(true); 
+    setOpen(false);
+
+
+    }
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false); // Close the modal
+  };
+
   const columns = [
-    { field: "sn", headerName: "S.N.", width: 150 },
-    { field: "name", headerName: "Name", width: 150 },
+    { field: "sn", headerName: "S.N.", width: 100, resizable: false },
+    { field: "name", headerName: "Name", width: 300, flex: 1, resizable: true },
+    {
+      field: "email",
+      headerName: "Email",
+      width: 400,
+      flex: 3,
+      resizable: true,
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 250,
+      flex: 1,
+      resizable: false,
+      renderCell: (params) => (
+        <div>
+          <IconButton onClick={(e) => handleEdit(e, params.row)}>
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </IconButton>
+          <div></div>
+          <Menu open={open} anchorEl={anchorEl} onClose={handleClose} style={{ width: "1000px" }}>
+            {options.map((option) => (
+              <MenuItem key={option} onClick={(e) => { handleMenuItemClick(option) }}>{option}</MenuItem>
+            ))}
+          </Menu>
+        </div>
+      ),
+    },
   ];
+
+  console.log("selectedUser:", selectedUser);
+
+  const formattedData =
+    allUsers?.map((user, index) => ({
+      id: user._id,
+      sn: index + 1,
+      name: user.username,
+      email: user.email,
+    })) || [];
 
   return (
-    <div style={{ width: "100%", padding: "50px 200px" }}>
-      <h3>All Users</h3>
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div style={{ width: "100%", padding: "50px 200px" }}>
+          <h3>All Users</h3>
 
-      <DataGrid autoHeight={true} rows={rows} columns={columns} />
-    </div>
+          <div style={{ width: "100%", overflowX: "auto" }}>
+            <DataGrid
+              autoHeight
+              rows={formattedData}
+              columns={columns}
+              pageSizeOptions={[5, 10, 25]}
+              initialState={{
+                pagination: {
+                  paginationModel: { pageSize: 5, page: 0 },
+                },
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+     
+      <FormModal user={selectedUser} open={modalOpen} handleClose={handleModalClose} />
+    </>
   );
 };
 

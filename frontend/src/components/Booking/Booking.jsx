@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "./booking.css";
 import TopLoadingBar from "../../shared/TopLoadingBar";
 import { Form, FormGroup, ListGroup, ListGroupItem, Button } from "reactstrap";
-
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { BASE_URL } from "../../utils/config";
+import CryptoJS from "crypto-js";
 
 const Booking = ({ tourDetails, avgRating }) => {
   const { user } = useContext(AuthContext);
@@ -21,48 +21,87 @@ const Booking = ({ tourDetails, avgRating }) => {
     bookAt: "",
   });
 
+  const [signature, setSignature] = useState("");
+  const [transactionUUID, setTransactionUUID] = useState("");
+  const [totalAmount, setTotalAmount] = useState(100);
+
+  const serviceFee = 2500;
+  useEffect(() => {
+    setTotalAmount(Number(price) * Number(booking.guestSize) + Number(serviceFee));
+  }, [price, booking.guestSize]);
+
   const handleChange = (e) => {
     setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
+  const generateSignature = () => {
+    const currentTime = new Date();
+    const formattedTime = currentTime.toISOString().slice(2, 10).replace(/-/g, '') +
+      '-' + currentTime.getHours() + currentTime.getMinutes() + currentTime.getSeconds();
+    setTransactionUUID(formattedTime);
 
+    const product_code = "EPAYTEST";
+    const secret = "8gBm/:&EnhH.1/q";
+    const hash = CryptoJS.HmacSHA256(
+      `total_amount=${totalAmount},transaction_uuid=${formattedTime},product_code=${product_code}`,
+      secret
+    );
+    const hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
+    setSignature(hashInBase64);
+    };
 
-  const serviceFee = 2500;
-  const totalAmount =
-    Number(price) * Number(booking.guestSize) + Number(serviceFee);
-
-    const handlePayment=()=>{
-      console.log("handle payment clicked")
-      let formData = new FormData();
-      formData.append("amount", 100)
-      formData.append("tax_amount", 10)
-      formData.append("total_amount", 110)
-      formData.append("transaction_uuid", "11-200-111sss1")
-      formData.append("product_code", "EPAYTEST")
-      formData.append("product_service_charge", 0)
-      formData.append("product_delivery_charge", 0)
-      formData.append("success_url", "https://developer.esewa.com.np/success")
-      formData.append("failure_url", "https://developer.esewa.com.np/failure")
-      formData.append("signed_field_names", "total_amount,transaction_uuid,product_code")
-      formData.append("signature", "4Ov7pCI1zIOdwtV2BRMUNjz1upIlT/COTxfLhWvVurE")
-      formData.append("secret", "8gBm/:&amp;EnhH.1/q")
-
-
+  const handlePayment = () => {
+    generateSignature();
+  
+    const formData = {
+      amount: totalAmount,
+      tax_amount: 0,
+      total_amount: totalAmount,
+      transaction_uuid: transactionUUID,
+      product_code: "EPAYTEST",
+      product_service_charge: 0,
+      product_delivery_charge: 0,
+      success_url: "https://developer.esewa.com.np/success?ASDF=ASDF",
+      failure_url: "https://developer.esewa.com.np/failure",
+      signed_field_names: "total_amount,transaction_uuid,product_code",
+      signature: signature,
+    };
+  
+    console.log("Form Data:", formData);
+  
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form';
+    form.target = '_blank';
+  
+    const addField = (name, value) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    };
+  
+    for (const key in formData) {
+      addField(key, formData[key]);
     }
+  
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+  };
+  
 
-  //send data to the server
   const handleInquiry = async (e) => {
-    console.log("handle inquiry clicked")
-
     e.preventDefault();
     try {
-      if (!user || user === null || user === undefined) {
-        return alert("please log in");
+      if (!user) {
+        return alert("Please log in");
       }
       const res = await fetch(`${BASE_URL}/booking`, {
-        method: "post",
+        method: "POST",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify(booking),
@@ -89,7 +128,6 @@ const Booking = ({ tourDetails, avgRating }) => {
           {avgRating === 0 ? null : avgRating} ({reviews?.length})
         </span>
       </div>
-      {/*============== booking form start ================*/}
       <div className="booking_form">
         <h5>Information</h5>
         <Form className="booking_info-form">
@@ -114,7 +152,6 @@ const Booking = ({ tourDetails, avgRating }) => {
           <FormGroup className="d-flex align-items-center gap-3">
             <input
               type="date"
-              placeholder=""
               id="bookAt"
               required
               onChange={handleChange}
@@ -127,9 +164,6 @@ const Booking = ({ tourDetails, avgRating }) => {
               onChange={handleChange}
             />
           </FormGroup>
-
-          {/*============== booking form end ================*/}
-          {/*============== booking bottom  ================*/}
           <div className="booking_bottom">
             <ListGroup>
               <ListGroupItem className="border-0 px-0">
@@ -145,7 +179,7 @@ const Booking = ({ tourDetails, avgRating }) => {
               <hr />
               <ListGroupItem className="border-0 px-0 total">
                 <h5>Total</h5>
-                <span>Rs. {totalAmount} </span>
+                <span>Rs. {totalAmount}</span>
               </ListGroupItem>
             </ListGroup>
           </div>
@@ -161,7 +195,6 @@ const Booking = ({ tourDetails, avgRating }) => {
               </Button>
               <Button
                 className="btn primary_btn"
-                type="submit"
                 style={{ display: "inline-block" }}
                 onClick={handlePayment}
               >

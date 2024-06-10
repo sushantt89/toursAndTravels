@@ -18,6 +18,7 @@
     "axios": "^1.7.2",
     "bootstrap": "^5.2.3",
     "eslint-plugin-jest": "^27.9.0",
+    "react-hook-form": "^7.51.5",
     "react-redux": "^9.1.2",
     "react-responsive-masonry": "^2.1.7",
     "react-router-dom": "^6.6.1",

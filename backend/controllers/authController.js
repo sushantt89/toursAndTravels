@@ -14,7 +14,7 @@ export const register = async (req, res) => {
       email: req.body.email,
       password: hash,
       photo: req.body.photo,
-      role:req.body.role,
+      role: req.body.role,
     });
 
     const saveduser = await newUser.save();
@@ -36,14 +36,17 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const email = req.body.email;
   try {
-    const findUser = await User.findOne({ email }); 
+    const findUser = await User.findOne({ email });
 
     if (!findUser) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     // If user found, compare password
-    bcrypt.compare(req.body.password, findUser.password)
+    bcrypt
+      .compare(req.body.password, findUser.password)
       .then((checkCorrectPassword) => {
         if (!checkCorrectPassword) {
           return res.status(401).json({
@@ -56,7 +59,7 @@ export const login = async (req, res) => {
           const token = jwt.sign(
             { id: findUser._id, role: findUser.role },
             process.env.JWT_SECRET_KEY,
-            { expiresIn: "15m" }
+            { expiresIn: "2h" }
           );
 
           //set token in the browser cookies and send response to the client
@@ -69,7 +72,7 @@ export const login = async (req, res) => {
             .json({
               success: true,
               message: "Successfully login",
-              data: { ...rest },
+              data: { role, ...rest },
               token,
               role,
             });
