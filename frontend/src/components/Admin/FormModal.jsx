@@ -38,7 +38,7 @@ const FormModal = ({ open, handleClose, user }) => {
       if (!res.ok) {
         alert(result.message);
       }
-      alert(`successfully updated ${user.name}`);
+      alert(`successfully update ${user.name}`)
     } catch (error) {
       alert(error.message);
     }
@@ -46,7 +46,7 @@ const FormModal = ({ open, handleClose, user }) => {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Update Details for {user.name}</DialogTitle>
+      <DialogTitle>Update User Details {user?.name}</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit(submitFunc)}>
           <Controller
