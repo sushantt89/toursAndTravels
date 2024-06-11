@@ -2,6 +2,7 @@ import Booking from "../models/Booking.js";
 
 //create a booking
 export const creatBooking = async (req, res) => {
+
   const newBooking = new Booking(req.body);
   try {
     const savedBooking = await newBooking.save();
@@ -56,3 +57,24 @@ export const getAllBookings=async (req,res)=>{
         
     }
 }
+
+//Delete booking
+export const deleteBooking = async (req, res) => {
+  const id = req.body.id;
+
+
+  try {
+    const deletedBooking = await Booking.findByIdAndDelete(id);
+    res.status(200).json({
+      success: true,
+      message: "Successfully Deleted!",
+      deleted_ID: deletedBooking._id,
+      
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to Delete!",
+    });
+  }
+};

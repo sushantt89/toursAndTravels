@@ -8,6 +8,7 @@ import { BASE_URL } from "../../utils/config";
 import CryptoJS from "crypto-js";
 
 const Booking = ({ tourDetails, avgRating }) => {
+  console.log("mn:",tourDetails)
   const { user } = useContext(AuthContext);
   const { price, reviews } = tourDetails;
   const navigate = useNavigate();
@@ -104,7 +105,9 @@ const Booking = ({ tourDetails, avgRating }) => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(booking),
+        body: JSON.stringify({ ...booking, bookingDestination: tourDetails.title}),
+
+
       });
       const result = await res.json();
       if (!res.ok) {
@@ -131,6 +134,13 @@ const Booking = ({ tourDetails, avgRating }) => {
       <div className="booking_form">
         <h5>Information</h5>
         <Form className="booking_info-form">
+        <input
+              type="text"
+              placeholder="Full Name"
+              id="id"
+              required
+              hidden
+            />
           <FormGroup>
             <input
               type="text"
