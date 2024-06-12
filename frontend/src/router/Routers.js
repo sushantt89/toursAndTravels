@@ -9,6 +9,7 @@ import SearchResultList from '../components/pages/SearchResultList';
 import ThankYou from "../components/pages/ThankYou";
 import Inquiry from "../components/pages/Inquiry"
 import AdminDashboard from "../components/Admin/AdminDashboard";
+import About from "../components/About/About";
 const Routers = () => {
   return (
     <Routes>
@@ -22,6 +23,7 @@ const Routers = () => {
       <Route exact path="/inquiry" element={<Inquiry/>} />
       <Route exact path="/tours/search" element={<SearchResultList/>} />
       <Route exact path="/admin/dashboard" element={<AdminDashboard/>} />
+      <Route exact path="/about" element={<About/>} />
     </Routes>
   );
 };
