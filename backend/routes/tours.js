@@ -14,7 +14,7 @@ import { verifyAdmin } from "../utils/verifyToken.js";
 const router = express.Router();
 
 //create new tour
-router.post("/",verifyAdmin, createTour); //so ya verifAdmin and createTour are 2 middleware funcs so paila verify auxa then create so verifyadmin sakisaepaxi arko middleware func ma jana parne hunxa its like a chain so ho arko ma jana lai nai tyo func vitra afno kam sakisake paxi next() use garya hunxa garena vane next middleware func ma jadian so basically verify ma next() xaina vaye create ma gayena.
+router.post("/", createTour); //so ya verifAdmin and createTour are 2 middleware funcs so paila verify auxa then create so verifyadmin sakisaepaxi arko middleware func ma jana parne hunxa its like a chain so ho arko ma jana lai nai tyo func vitra afno kam sakisake paxi next() use garya hunxa garena vane next middleware func ma jadian so basically verify ma next() xaina vaye create ma gayena.
 //update tour
 router.put("/:id",verifyAdmin, updateTour);
 //Delete tour
