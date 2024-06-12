@@ -5,7 +5,11 @@ import { BASE_URL } from "../../utils/config";
 import { AuthContext } from "../../context/AuthContext";
 import Loader from "../../shared/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPenToSquare, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faPenToSquare,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import FormModalBooking from "./FormModalBooking";
 import FormModalTours from "./FormModalTours";
@@ -116,23 +120,19 @@ const AllTours = () => {
     },
 
     {
-        field: "featured",
-        headerName: "Featured",
-        width: 400,
-        flex: 3,
-        resizable: true,
-        renderCell: (params) => {
-          return params.row.featured ? (
-            <FontAwesomeIcon
-              icon={faCheck}
-              style={{ color: "#63E6BE" }}
-            />
-          ) : (
-            <FontAwesomeIcon icon={faTimes} /> // Corrected icon name
-          );
-        },
+      field: "featured",
+      headerName: "Featured",
+      width: 400,
+      flex: 3,
+      resizable: true,
+      renderCell: (params) => {
+        return params.row.featured ? (
+          <FontAwesomeIcon icon={faCheck} />
+        ) : (
+          <FontAwesomeIcon icon={faTimes} /> // Corrected icon name
+        );
       },
-      
+    },
 
     {
       field: "action",
@@ -180,6 +180,7 @@ const AllTours = () => {
       distance: tour.distance,
       price: tour.price,
       title: tour.title,
+      featured: tour.featured,
     })) || [];
 
   return (

@@ -12,17 +12,23 @@ import { BASE_URL } from "../../utils/config";
 
 const FormModalTours = ({ open, handleClose, user }) => {
   const { handleSubmit, control } = useForm({ defaultValues: user });
-  console.log("userValue:", user);
+
 
   const submitFunc = async (values) => {
-    console.log("values :", values);
+    console.log("values of tour:", values);
     handleClose();
     const userId = user.id;
     try {
       const bodyObject = {
-        id: values.id,
-        username: values.name,
-        email: values.email,
+        id: userId,
+        title:values.title,
+        address:values.title,
+        city:values.city,
+        desc:values.desc,
+        distance:values.distance,
+        price:values.price,
+        
+
       };
       const res = await fetch(`${BASE_URL}/tours/${userId}`, {
         method: "PUT",

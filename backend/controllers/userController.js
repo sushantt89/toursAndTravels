@@ -22,6 +22,7 @@ export const createUser = async (req, res) => {
 //Update User
 export const updateUser = async (req, res) => {
   const id = req.body.id;
+  console.log(req.body.id)
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
@@ -71,6 +72,7 @@ export const getSingleUser = async (req, res) => {
       data: singleUser,
     });
   } catch (error) {
+    console.log(error.message)
     res.status(500).json({
       success: false,
       message: "Not Found!",
