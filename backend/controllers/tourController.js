@@ -3,6 +3,7 @@ import Tour from "../models/Tour.js";
 //create Tour
 export const createTour = async (req, res) => {
   const newTour = new Tour(req.body);
+  console.log(req.body)
   try {
     const savedTour = await newTour.save();
 
@@ -12,6 +13,7 @@ export const createTour = async (req, res) => {
       data: savedTour,
     });
   } catch (error) {
+    console.log(error.message)
     res.status(500).json({
       success: false,
       message: "Failed to create. Try Again!",
