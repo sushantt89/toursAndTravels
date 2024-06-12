@@ -3,11 +3,14 @@ import {
   creatBooking,
   getAllBookings,
   getBookingById,
-  deleteBooking
+  deleteBooking,
+  updateBooking
 } from "../controllers/bookingController.js";
 import { verifyUser,verifyAdmin } from "../utils/verifyToken.js";
 const router = express.Router();
 
+//create new booking
+router.put("/:id", verifyAdmin, updateBooking);
 //create new booking
 router.post("/", verifyUser, creatBooking);
 //get booking by id

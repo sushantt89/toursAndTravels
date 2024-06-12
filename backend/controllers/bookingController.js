@@ -78,3 +78,29 @@ export const deleteBooking = async (req, res) => {
     });
   }
 };
+
+//Update booking
+export const updateBooking = async (req, res) => {
+  const id = req.body.id;
+  console.log("body:",req.bodySS)
+  console.log(req.body.id)
+  try {
+    const updatedUser = await Booking.findByIdAndUpdate(
+      id,
+      {
+        $set: req.body,
+      },
+      { new: true } // if you do not keep this you will get original data and not the updated one, So you need this when you want to immediatedly get data after updating it. else you need to fetch data again from db.
+    );
+    res.status(200).json({
+      success: true,
+      message: "Successfully Updated!",
+      data: updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to Update!",
+    });
+  }
+};

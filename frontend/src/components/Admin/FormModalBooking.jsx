@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Button,
@@ -11,8 +11,11 @@ import {
 import { BASE_URL } from "../../utils/config";
 
 const FormModalBooking = ({ open, handleClose, user }) => {
-  const { handleSubmit, control } = useForm({ defaultValues: user });
-  console.log("userValue:", user);
+  const { handleSubmit, control, reset } = useForm({ defaultValues: user });
+
+  useEffect(() => {
+    reset(user);
+  }, [user, reset]);
 
   const submitFunc = async (values) => {
     console.log("values :", values);
@@ -21,10 +24,13 @@ const FormModalBooking = ({ open, handleClose, user }) => {
     try {
       const bodyObject = {
         id: userId,
-        username: values.name,
+        destination: values.destination,
         email: values.email,
+        guestSize: values.guestSize,
+        name: values.name,
+        phone: values.phone,
       };
-      const res = await fetch(`${BASE_URL}/users/${userId}`, {
+      const res = await fetch(`${BASE_URL}/booking/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -37,8 +43,9 @@ const FormModalBooking = ({ open, handleClose, user }) => {
       console.log("updated user :", result);
       if (!res.ok) {
         alert(result.message);
+      } else {
+        alert(`Successfully updated ${user.name}`);
       }
-      alert(`successfully update ${user.name}`)
     } catch (error) {
       alert(error.message);
     }
@@ -50,17 +57,15 @@ const FormModalBooking = ({ open, handleClose, user }) => {
       <DialogContent>
         <form onSubmit={handleSubmit(submitFunc)}>
           <Controller
-            name="name"
+            name="destination"
             control={control}
             render={({ field }) => (
               <TextField
                 {...field}
-                autoFocus
                 margin="dense"
-                label="User Name"
+                label="Destination"
                 type="text"
                 fullWidth
-                defaultValue={user.name}
               />
             )}
           />
@@ -71,10 +76,35 @@ const FormModalBooking = ({ open, handleClose, user }) => {
               <TextField
                 {...field}
                 margin="dense"
-                label="Email Address"
+                label="Email"
                 type="email"
                 fullWidth
-                defaultValue={user.email}
+              />
+            )}
+          />
+          <Controller
+            name="guestSize"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                margin="dense"
+                label="Guest Size"
+                type="number"
+                fullWidth
+              />
+            )}
+          />
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                margin="dense"
+                label="Name"
+                type="text"
+                fullWidth
               />
             )}
           />
@@ -86,9 +116,8 @@ const FormModalBooking = ({ open, handleClose, user }) => {
                 {...field}
                 margin="dense"
                 label="Phone"
-                type="number"
+                type="tel"
                 fullWidth
-                defaultValue={user.phone}
               />
             )}
           />
@@ -106,3 +135,4 @@ const FormModalBooking = ({ open, handleClose, user }) => {
 };
 
 export default FormModalBooking;
+ 
