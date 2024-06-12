@@ -20,7 +20,7 @@ const FormModal = ({ open, handleClose, user }) => {
     const userId = user.id;
     try {
       const bodyObject = {
-        id: values.id,
+        id: userId,
         username: values.name,
         email: values.email,
       };
@@ -38,7 +38,7 @@ const FormModal = ({ open, handleClose, user }) => {
       if (!res.ok) {
         alert(result.message);
       }
-      alert(`successfully update ${user.name}`)
+      alert(`successfully update ${user.name}`);
     } catch (error) {
       alert(error.message);
     }
@@ -64,6 +64,7 @@ const FormModal = ({ open, handleClose, user }) => {
               />
             )}
           />
+         
           <Controller
             name="email"
             control={control}

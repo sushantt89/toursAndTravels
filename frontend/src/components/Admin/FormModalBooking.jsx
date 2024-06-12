@@ -20,7 +20,7 @@ const FormModalBooking = ({ open, handleClose, user }) => {
     const userId = user.id;
     try {
       const bodyObject = {
-        id: values.id,
+        id: userId,
         username: values.name,
         email: values.email,
       };
